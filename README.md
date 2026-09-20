@@ -2,7 +2,7 @@
 
 A sleek, responsive practice counter for competitive programmers tracking **LeetCode**, **Codeforces**, **AtCoder**, and **CSES**.
 
-Designed for **GitHub Pages** (`username.github.io`) with **100% native GitHub storage** using **Private GitHub Gists**. 
+Designed for **GitHub Pages** (`username.github.io`) with **100% native GitHub storage** using **Private GitHub Gists**.
 
 > **Zero third-party services** — No Supabase, no Firebase, no external databases or servers. Everything is stored directly under your own personal GitHub account!
 
@@ -35,6 +35,7 @@ Designed for **GitHub Pages** (`username.github.io`) with **100% native GitHub s
 ## 🚀 How to Publish to GitHub Pages (`github.io`)
 
 ### Step 1: Push this code to a GitHub repository
+
 Open your terminal in this directory (`contest-counter-site`):
 
 ```bash
@@ -52,6 +53,7 @@ git push -u origin main
 ```
 
 ### Step 2: Enable GitHub Pages
+
 1. On GitHub, go to your repository.
 2. Click **Settings** (tab at the top) &rarr; **Pages** (in the left sidebar).
 3. Under **Build and deployment** &rarr; **Branch**:
@@ -62,7 +64,7 @@ git push -u origin main
    ```text
    https://<your-username>.github.io/<repo-name>/
    ```
-   *(Or `https://<your-username>.github.io/` if you named the repo `<your-username>.github.io`)*.
+   _(Or `https://<your-username>.github.io/` if you named the repo `<your-username>.github.io`)_.
 
 ---
 
@@ -72,10 +74,11 @@ git push -u origin main
 2. Click the **Connect GitHub** button in the top right.
 3. Click **"Generate Token on GitHub ↗"** (or open [GitHub Token Generator](https://github.com/settings/tokens/new?description=CP+Counters+Tracker&scopes=gist)).
 4. Click **Generate token** at the bottom of the GitHub page.
-   *(Note: It only requires the `gist` permission so it can create and update your private counters Gist).*
+   _(Note: It only requires the `gist` permission so it can create and update your private counters Gist)._
 5. Paste the token into the app and click **Connect & Sync**.
 
 That's it! Your site will immediately:
+
 - Authenticate and display your GitHub avatar & username.
 - Create a private Gist named `cp_counters.json` under your account.
 - Synchronize all your counter increments in real-time.

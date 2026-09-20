@@ -32,40 +32,16 @@
   let saveDebounceTimer = null;
   let toastTimer = null;
 
-  // --- DOM Elements ---
-  const totalSolvedEl = document.getElementById('totalSolved');
-  const syncStatusEl = document.getElementById('syncStatus');
-  const syncStatusTextEl = document.getElementById('syncStatusText');
-  const storageLabelEl = document.getElementById('storageLabel');
-  const openAuthModalBtn = document.getElementById('openAuthModalBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const userProfileEl = document.getElementById('userProfile');
-  const userAvatarEl = document.getElementById('userAvatar');
-  const userNameEl = document.getElementById('userName');
-  const viewGistLinkEl = document.getElementById('viewGistLink');
-  const toastEl = document.getElementById('toast');
-
-  // Modals
-  const authModal = document.getElementById('authModal');
-  const helpModal = document.getElementById('helpModal');
-  const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
-  const cancelAuthModalBtn = document.getElementById('cancelAuthModalBtn');
-  const connectGitHubBtn = document.getElementById('connectGitHubBtn');
-  const githubTokenInput = document.getElementById('githubTokenInput');
-
-  const openHelpBtn = document.getElementById('openHelpBtn');
-  const closeHelpBtn = document.getElementById('closeHelpBtn');
-  const closeHelpFooterBtn = document.getElementById('closeHelpFooterBtn');
-
   // --- Toast ---
   function showToast(message) {
+    const toastEl = document.getElementById('toast');
     if (!toastEl) return;
     toastEl.textContent = message;
     toastEl.classList.remove('hidden');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toastEl.classList.add('hidden');
-    }, 3000);
+    }, 3200);
   }
 
   // --- Local Persistence ---
@@ -99,12 +75,16 @@
       total += val;
     });
 
+    const totalSolvedEl = document.getElementById('totalSolved');
     if (totalSolvedEl) {
       totalSolvedEl.textContent = total;
     }
   }
 
   function updateSyncStatus(status) {
+    const syncStatusEl = document.getElementById('syncStatus');
+    const syncStatusTextEl = document.getElementById('syncStatusText');
+    const storageLabelEl = document.getElementById('storageLabel');
     if (!syncStatusEl || !syncStatusTextEl || !storageLabelEl) return;
 
     syncStatusEl.classList.remove('status-local', 'status-cloud');
@@ -128,6 +108,12 @@
   }
 
   function renderAuthUI() {
+    const openAuthModalBtn = document.getElementById('openAuthModalBtn');
+    const userProfileEl = document.getElementById('userProfile');
+    const userNameEl = document.getElementById('userName');
+    const userAvatarEl = document.getElementById('userAvatar');
+    const viewGistLinkEl = document.getElementById('viewGistLink');
+
     if (currentUser) {
       if (openAuthModalBtn) openAuthModalBtn.classList.add('hidden');
       if (userProfileEl) userProfileEl.classList.remove('hidden');
@@ -153,9 +139,11 @@
 
   // --- GitHub REST API Client ---
   async function fetchGitHub(endpoint, token, options = {}) {
+    // Classic PATs (ghp_*) work best with 'token', while newer ones support Bearer
+    const authHeader = token.startsWith('ghp_') ? `token ${token}` : `Bearer ${token}`;
     const headers = {
       Accept: 'application/vnd.github.v3+json',
-      Authorization: `Bearer ${token}`,
+      Authorization: authHeader,
       'Content-Type': 'application/json',
       ...options.headers,
     };
@@ -166,7 +154,7 @@
     });
 
     if (!response.ok) {
-      let errorMsg = `GitHub API Error (${response.status})`;
+      let errorMsg = `GitHub Error (${response.status})`;
       try {
         const errJson = await response.json();
         if (errJson.message) errorMsg = errJson.message;
@@ -202,11 +190,8 @@
     // 2. Search recent gists for GIST_FILENAME
     try {
       const userGists = await fetchGitHub('/gists?per_page=50', token);
-      const found = userGists.find(
-        (g) => g.files && g.files[GIST_FILENAME]
-      );
+      const found = userGists.find((g) => g.files && g.files[GIST_FILENAME]);
       if (found) {
-        // Fetch full gist details
         return await fetchGitHub(`/gists/${found.id}`, token);
       }
     } catch (e) {
@@ -349,15 +334,23 @@
   }
 
   // --- Auth Handlers ---
-  async function handleConnect() {
-    const rawToken = (githubTokenInput.value || '').trim();
+  async function handleConnect(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const tokenInput = document.getElementById('githubTokenInput');
+    const connectBtn = document.getElementById('connectGitHubBtn');
+    const rawToken = (tokenInput ? tokenInput.value : '').replace(/^["']|["']$/g, '').trim();
+
     if (!rawToken) {
-      showToast('Please enter your GitHub Personal Access Token.');
+      showToast('⚠️ Please paste your GitHub token first.');
+      if (tokenInput) tokenInput.focus();
       return;
     }
 
-    connectGitHubBtn.disabled = true;
-    connectGitHubBtn.textContent = 'Connecting...';
+    if (connectBtn) {
+      connectBtn.disabled = true;
+      connectBtn.textContent = 'Connecting...';
+    }
 
     try {
       // 1. Verify token
@@ -378,24 +371,29 @@
       renderAuthUI();
       closeAuthModal();
 
-      showToast(`Connected as @${user.login}! Synced with private Gist.`);
+      showToast(`✅ Connected as @${user.login}! Counters synced to private Gist.`);
     } catch (err) {
       console.error('Connection failed:', err);
-      showToast('Connection failed: ' + err.message);
+      showToast('❌ Connection failed: ' + (err.message || 'Check your token'));
     } finally {
-      connectGitHubBtn.disabled = false;
-      connectGitHubBtn.textContent = 'Connect & Sync';
+      if (connectBtn) {
+        connectBtn.disabled = false;
+        connectBtn.textContent = 'Connect & Sync';
+      }
     }
   }
 
-  function handleDisconnect() {
+  function handleDisconnect(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
     localStorage.removeItem(STORAGE_KEY_TOKEN);
     localStorage.removeItem(STORAGE_KEY_GIST_ID);
     githubToken = null;
     currentUser = null;
     currentGistId = null;
 
-    if (githubTokenInput) githubTokenInput.value = '';
+    const tokenInput = document.getElementById('githubTokenInput');
+    if (tokenInput) tokenInput.value = '';
 
     loadLocalCounts();
     renderAll();
@@ -404,22 +402,59 @@
   }
 
   // --- Modals ---
-  function openAuthModal() {
+  function openAuthModal(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const authModal = document.getElementById('authModal');
+    const githubTokenInput = document.getElementById('githubTokenInput');
+
     if (githubTokenInput) githubTokenInput.value = githubToken || '';
-    if (authModal) authModal.classList.remove('hidden');
+    if (authModal) {
+      authModal.classList.remove('hidden');
+      authModal.style.display = 'flex';
+      setTimeout(() => {
+        if (githubTokenInput) githubTokenInput.focus();
+      }, 60);
+    }
   }
 
-  function closeAuthModal() {
-    if (authModal) authModal.classList.add('hidden');
+  function closeAuthModal(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const authModal = document.getElementById('authModal');
+    if (authModal) {
+      authModal.classList.add('hidden');
+      authModal.style.display = 'none';
+    }
   }
 
-  function openHelpModal() {
-    if (helpModal) helpModal.classList.remove('hidden');
+  function openHelpModal(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const helpModal = document.getElementById('helpModal');
+    if (helpModal) {
+      helpModal.classList.remove('hidden');
+      helpModal.style.display = 'flex';
+    }
   }
 
-  function closeHelpModal() {
-    if (helpModal) helpModal.classList.add('hidden');
+  function closeHelpModal(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const helpModal = document.getElementById('helpModal');
+    if (helpModal) {
+      helpModal.classList.add('hidden');
+      helpModal.style.display = 'none';
+    }
   }
+
+  // Expose global window methods for direct inline onclick handlers
+  window.openAuthModal = openAuthModal;
+  window.closeAuthModal = closeAuthModal;
+  window.openHelpModal = openHelpModal;
+  window.closeHelpModal = closeHelpModal;
+  window.handleConnect = handleConnect;
+  window.handleDisconnect = handleDisconnect;
 
   // --- Event Listeners ---
   function setupEventListeners() {
@@ -458,23 +493,36 @@
       });
     });
 
-    // Modal buttons
-    if (openAuthModalBtn) openAuthModalBtn.addEventListener('click', openAuthModal);
-    if (closeAuthModalBtn) closeAuthModalBtn.addEventListener('click', closeAuthModal);
-    if (cancelAuthModalBtn) cancelAuthModalBtn.addEventListener('click', closeAuthModal);
-    if (connectGitHubBtn) connectGitHubBtn.addEventListener('click', handleConnect);
-    if (logoutBtn) logoutBtn.addEventListener('click', handleDisconnect);
+    // Token input Enter key
+    const githubTokenInput = document.getElementById('githubTokenInput');
+    if (githubTokenInput) {
+      githubTokenInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          handleConnect(e);
+        }
+      });
+    }
 
-    if (openHelpBtn) openHelpBtn.addEventListener('click', openHelpModal);
-    if (closeHelpBtn) closeHelpBtn.addEventListener('click', closeHelpModal);
-    if (closeHelpFooterBtn) closeHelpFooterBtn.addEventListener('click', closeHelpModal);
+    // Modal overlay backdrop click to close
+    const authModal = document.getElementById('authModal');
+    const helpModal = document.getElementById('helpModal');
 
-    // Close on overlay backdrop click
     [authModal, helpModal].forEach((modal) => {
       if (!modal) return;
       modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.add('hidden');
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+          modal.style.display = 'none';
+        }
       });
+    });
+
+    // Escape key closes modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeAuthModal();
+        closeHelpModal();
+      }
     });
   }
 
