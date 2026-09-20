@@ -32,18 +32,10 @@
           <!-- Sync Status Indicator -->
           <div id="syncStatus" class="status-badge status-local" title="Data stored locally on this device">
             <span class="status-dot"></span>
-            <span id="syncStatusText">Local Storage</span>
+            <span id="syncStatusText">Local Guest</span>
           </div>
 
-          <!-- Settings Button -->
-          <button id="openSettingsBtn" class="icon-btn" title="Backend & Auth Settings" aria-label="Settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </button>
-
-          <!-- Instructions Modal Button -->
+          <!-- How-To Guide Modal Button -->
           <button id="openHelpBtn" class="icon-btn" title="How to publish to GitHub Pages" aria-label="Help">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -54,24 +46,26 @@
 
           <!-- Auth Actions -->
           <div class="auth-box">
-            <!-- Signed In View -->
+            <!-- Signed In View (Connected to GitHub) -->
             <div id="userProfile" class="user-profile hidden">
               <img id="userAvatar" class="user-avatar" src="" alt="Avatar" />
               <div class="user-info">
-                <span id="userName" class="user-name">User</span>
-                <span class="user-account-type">GitHub Account</span>
+                <span id="userName" class="user-name">GitHub User</span>
+                <a id="viewGistLink" class="user-gist-link" href="#" target="_blank" rel="noopener" title="View your raw counter data on GitHub Gist">
+                  View Gist ↗
+                </a>
               </div>
-              <button id="logoutBtn" class="btn btn-secondary btn-sm" title="Log out">
-                Sign Out
+              <button id="logoutBtn" class="btn btn-secondary btn-sm" title="Disconnect GitHub Account">
+                Disconnect
               </button>
             </div>
 
-            <!-- Signed Out View -->
-            <button id="loginBtn" class="btn btn-github">
+            <!-- Signed Out View (Connect GitHub Button) -->
+            <button id="openAuthModalBtn" class="btn btn-github">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
               </svg>
-              <span>Sign in with GitHub</span>
+              <span>Connect GitHub</span>
             </button>
           </div>
         </div>
@@ -85,13 +79,13 @@
         </div>
         <div class="stat-divider"></div>
         <div class="stat-group">
-          <span class="stat-label">Active Platforms</span>
+          <span class="stat-label">Tracked Platforms</span>
           <span class="stat-number-sm">4 / 4</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-group stat-sync-info">
-          <span class="stat-label">Storage Mode</span>
-          <span id="storageLabel" class="stat-subtext">Guest (Local Device)</span>
+          <span class="stat-label">Storage Backend</span>
+          <span id="storageLabel" class="stat-subtext">Guest (Local Browser)</span>
         </div>
       </section>
 
@@ -233,47 +227,48 @@
       <!-- Footer -->
       <footer class="footer">
         <p>
-          Designed for competitive programmers • Deployable to <strong>GitHub Pages</strong> with <strong>GitHub OAuth</strong> & <strong>Supabase</strong>
+          100% Native GitHub Architecture • Data stored in your personal <strong>Private GitHub Gist</strong> • Deployable via <strong>GitHub Pages</strong>
         </p>
       </footer>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <!-- Connect GitHub Modal -->
+    <div id="authModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
       <div class="modal-card">
         <div class="modal-header">
-          <h3 class="modal-title">Supabase & Cloud Sync Settings</h3>
-          <button id="closeSettingsBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+          <h3 class="modal-title">Connect GitHub Account & Storage</h3>
+          <button id="closeAuthModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
         </div>
         <div class="modal-body">
           <p class="modal-desc">
-            To enable <strong>GitHub Sign-In</strong> and save your counters in the cloud, enter your free <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a> project credentials.
+            Save your counters directly to your personal GitHub account using a <strong>Private GitHub Gist</strong>. No third-party databases, zero external services!
           </p>
 
-          <div class="form-group">
-            <label for="cfgSupabaseUrl">Supabase Project URL</label>
-            <input type="url" id="cfgSupabaseUrl" placeholder="https://xyzabcdefgh.supabase.co" spellcheck="false" />
-            <span class="input-hint">Found in Supabase Dashboard &rarr; Project Settings &rarr; API</span>
+          <div class="help-step">
+            <span class="step-num">1</span>
+            <div class="step-content">
+              <h4>Generate a Personal Access Token</h4>
+              <p>Create a GitHub token with only the <strong>gist</strong> permission:</p>
+              <a href="https://github.com/settings/tokens/new?description=CP+Counters+Tracker&scopes=gist" target="_blank" rel="noopener" class="btn btn-github btn-sm" style="margin-top: 6px; display: inline-flex;">
+                Generate Token on GitHub ↗
+              </a>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="cfgSupabaseAnonKey">Supabase Anon Public Key</label>
-            <input type="password" id="cfgSupabaseAnonKey" placeholder="eyJhbGciOiJIUzI1NiIsIn..." spellcheck="false" />
-            <span class="input-hint">Found in Supabase Dashboard &rarr; Project Settings &rarr; API (anon public)</span>
-          </div>
-
-          <div class="info-callout">
-            <strong>GitHub OAuth Callback URL:</strong>
-            <p>In your GitHub OAuth App settings, set the Authorization callback URL to:</p>
-            <div class="copy-field">
-              <code id="suggestedCallbackUrl">https://YOUR_PROJECT_ID.supabase.co/auth/v1/callback</code>
-              <button id="copyCallbackBtn" class="btn-xs">Copy</button>
+          <div class="help-step">
+            <span class="step-num">2</span>
+            <div class="step-content" style="width: 100%;">
+              <h4>Paste Your GitHub Token</h4>
+              <div class="form-group" style="margin-top: 6px;">
+                <input type="password" id="githubTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false" />
+                <span class="input-hint">Your token stays in your local browser only and communicates directly with <code>api.github.com</code>.</span>
+              </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button id="clearSettingsBtn" class="btn btn-secondary">Clear Keys</button>
-          <button id="saveSettingsBtn" class="btn btn-primary">Save & Connect</button>
+          <button id="cancelAuthModalBtn" class="btn btn-secondary">Cancel</button>
+          <button id="connectGitHubBtn" class="btn btn-primary">Connect & Sync</button>
         </div>
       </div>
     </div>
@@ -282,48 +277,32 @@
     <div id="helpModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
       <div class="modal-card modal-large">
         <div class="modal-header">
-          <h3 class="modal-title">How to Publish on GitHub Pages with GitHub Login</h3>
+          <h3 class="modal-title">How to Publish to GitHub Pages</h3>
           <button id="closeHelpBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
         </div>
         <div class="modal-body modal-scroll">
           <div class="help-step">
             <span class="step-num">1</span>
             <div class="step-content">
-              <h4>Create a GitHub Repository</h4>
-              <p>Create a repository on GitHub (e.g. <code>contest-counter</code> or <code>&lt;username&gt;.github.io</code>).</p>
+              <h4>Push Files to GitHub</h4>
+              <p>Create a repository (e.g. <code>cp-counter</code> or <code>&lt;username&gt;.github.io</code>) and push these files (<code>index.html</code>, <code>style.css</code>, <code>app.js</code>).</p>
             </div>
           </div>
 
           <div class="help-step">
             <span class="step-num">2</span>
             <div class="step-content">
-              <h4>Push These Files</h4>
-              <p>Push <code>index.html</code>, <code>style.css</code>, <code>app.js</code>, and <code>config.js</code> to your repo.</p>
+              <h4>Enable GitHub Pages</h4>
+              <p>In your repo &rarr; <strong>Settings</strong> &rarr; <strong>Pages</strong> &rarr; select <strong>Deploy from a branch</strong> (branch: <code>main</code>, folder: <code>/ (root)</code>) &rarr; click <strong>Save</strong>.</p>
+              <p>Your URL will immediately be: <code>https://&lt;username&gt;.github.io/&lt;repo-name&gt;/</code></p>
             </div>
           </div>
 
           <div class="help-step">
             <span class="step-num">3</span>
             <div class="step-content">
-              <h4>Enable GitHub Pages</h4>
-              <p>Go to your GitHub repo &rarr; <strong>Settings</strong> &rarr; <strong>Pages</strong> &rarr; select <strong>Deploy from a branch</strong> (branch: <code>main</code>, folder: <code>/ (root)</code>) &rarr; click <strong>Save</strong>.</p>
-              <p>Your URL will be: <code>https://&lt;username&gt;.github.io/&lt;repo-name&gt;/</code></p>
-            </div>
-          </div>
-
-          <div class="help-step">
-            <span class="step-num">4</span>
-            <div class="step-content">
-              <h4>Create Free Supabase Database</h4>
-              <p>Go to <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>, create a project, and run the SQL table script provided in <code>README.md</code>.</p>
-            </div>
-          </div>
-
-          <div class="help-step">
-            <span class="step-num">5</span>
-            <div class="step-content">
-              <h4>Enable GitHub OAuth</h4>
-              <p>In GitHub Settings &rarr; <strong>Developer Settings</strong> &rarr; <strong>OAuth Apps</strong>, create an App. Paste the Client ID and Secret into Supabase &rarr; Authentication &rarr; Providers &rarr; GitHub.</p>
+              <h4>Connect Your Account</h4>
+              <p>Open your site, click <strong>Connect GitHub</strong>, and generate a token with <code>gist</code> permission. Your counters will auto-save to a private Gist under your GitHub profile!</p>
             </div>
           </div>
         </div>
@@ -336,9 +315,7 @@
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden" aria-live="polite"></div>
 
-    <!-- Config, Supabase CDN, and App scripts -->
-    <script src="config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- App script (Pure Vanilla JS, 0 dependencies) -->
     <script src="app.js"></script>
   </body>
 </html>
